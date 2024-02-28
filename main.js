@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
     order by count(Payments.LectureId) desc limit 6;`
 
     const newPost = `select PostId, PostTitle, PostType
-    from post
+    from Post
     where PostType in (1, 2)
     order by PostId desc limit 5;`
 
@@ -119,7 +119,7 @@ app.post('/login', (req, res) => {
     const UserPassword = req.body.UserPassword;
     
     try{
-            db.query(`SELECT * FROM users WHERE UserId = ?;`, [UserId], (err, rows) => {
+            db.query(`SELECT * FROM Users WHERE UserId = ?;`, [UserId], (err, rows) => {
                 if (err) {
                   console.log(err);
                   res.status(500).send('로그인 실패');
@@ -302,8 +302,8 @@ app.post('/payment', (req, res) => { //PaymentDate는 now() 처리
 app.post('/payment_history', (req, res) => { //PaymentDate는 now() 처리
     const UserId = req.body.UserId;
     let query = `select payments.*, lectures.Title, lectures.StartDate, lectures.EndDate
-    from payments
-    left join lectures on payments.LectureId = lectures.LectureId
+    from Payments
+    left join Lectures on Payments.LectureId = Lectures.LectureId
     where UserId = ?;`;
 
     db.query(query, [UserId], (err, rows) => {
@@ -348,7 +348,7 @@ app.get('/lecturesearch', (req, res) => {
 
     db.query(`select Lectures.LecturesImageUrl, Lectures.Title, Lectures.LectureId, Lectures.Description
         from Lectures
-        where lectures.Title like ?;`, [Title], (err, cat) => {
+        where Lectures.Title like ?;`, [Title], (err, cat) => {
         if(err) {
             console.log(err);
             res.status(500).send('잘못된 접근입니다. 1');
@@ -389,9 +389,9 @@ app.post('/lecture', (req, res) => {
 
     db.query(`select Lectures.LecturesImageUrl, Lectures.Title, Lectures.Description, enrollments.AttendanceRate, instructor.*
     from Lectures
-    left join enrollments on Lectures.LectureId = enrollments.LectureId
-    left join instructor on Lectures.InstructorId = instructor.InstructorId
-    where enrollments.LectureId = ? and enrollments.UserId = ?;`, [LectureId, UserId], (err, lec) => {
+    left join Enrollments on Lectures.LectureId = Enrollments.LectureId
+    left join Instructor on Lectures.InstructorId = Instructor.InstructorId
+    where Enrollments.LectureId = ? and Enrollments.UserId = ?;`, [LectureId, UserId], (err, lec) => {
         if(err) {
             console.log(err);
             res.status(500).send('잘못된 접근입니다.');
@@ -429,7 +429,7 @@ app.post('/eachlecture', (req, res) => {
             res.status(500).send('잘못된 접근입니다.');
         }   else {
             db.query(`select UserId, InputTime, CommentInfo
-            from lecturecomment
+            from Lecturecomment
             where TOCId = ?;`, [TOCId], (err, com) => {
                 if(err) {
                     console.log(err);
@@ -451,7 +451,7 @@ app.post('/eachlecture', (req, res) => {
 app.get('/lecturecomment', (req, res) => {
     const TOCId = req.query.TOCId;
     let query = `select LCommentId, UserId, TOCId, CommentInfo, InputTime
-    from lecturecomment
+    from Lecturecomment
     where TOCId = ?`;
 
     db.query(query, [TOCId], (err, rows) => {
@@ -475,7 +475,7 @@ app.post('/addlecturecomment', (req, res) => {
 
     console.log(UserId, TOCId, CommentInfo);
 
-    db.query(`insert into lecturecomment(UserId, TOCId, CommentInfo, InputTime)
+    db.query(`insert into Lecturecomment(UserId, TOCId, CommentInfo, InputTime)
     value(?, ?, ?, now());`, [UserId, TOCId, CommentInfo], (err, rows) => {
         if(err) {
             console.log(err);
