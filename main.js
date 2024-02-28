@@ -301,7 +301,7 @@ app.post('/payment', (req, res) => { //PaymentDate는 now() 처리
 //결제내역 출력
 app.post('/payment_history', (req, res) => { //PaymentDate는 now() 처리
     const UserId = req.body.UserId;
-    let query = `select payments.*, lectures.Title, lectures.StartDate, lectures.EndDate
+    let query = `select Payments.*, lectures.Title, lectures.StartDate, lectures.EndDate
     from Payments
     left join Lectures on Payments.LectureId = Lectures.LectureId
     where UserId = ?;`;
@@ -387,7 +387,7 @@ app.post('/lecture', (req, res) => {
     const LectureId = req.body.LectureId;
     const UserId = req.body.UserId;
 
-    db.query(`select Lectures.LecturesImageUrl, Lectures.Title, Lectures.Description, enrollments.AttendanceRate, instructor.*
+    db.query(`select Lectures.LecturesImageUrl, Lectures.Title, Lectures.Description, enrollments.AttendanceRate, Instructor.*
     from Lectures
     left join Enrollments on Lectures.LectureId = Enrollments.LectureId
     left join Instructor on Lectures.InstructorId = Instructor.InstructorId
