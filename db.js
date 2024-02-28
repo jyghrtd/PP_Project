@@ -3,7 +3,7 @@ const mysql = require('mysql2');
 var pp_db = mysql.createConnection({
     host: 'localhost',
     port: '3306',
-    user: 'scoot',
+    user: 'scott',
     password: 'tiger',
     database: 'PorkPointDB'
 })
