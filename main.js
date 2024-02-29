@@ -5,6 +5,8 @@ const port = 3000;
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 
+app.use(express.static("public"));
+
 const db = require("./db.js");
 
 app.set("port", port);
